@@ -1,0 +1,102 @@
+require('dotenv').config();
+const mongoose = require('mongoose');
+const User = require('../models/User');
+const Product = require('../models/Product');
+
+const connectDB = async () => {
+    await mongoose.connect(process.env.MONGODB_URI);
+    console.log('MongoDB Connected');
+};
+
+const seedData = async () => {
+    await connectDB();
+
+    // Créer un admin par défaut si il n'existe pas déjà
+    const adminExists = await User.findOne({ email: 'admin@agriflow.com' });
+
+    if (!adminExists) {
+        await User.create({
+            name: 'Administrateur AgroFlow',
+            email: 'admin@agriflow.com',
+            password: 'Admin@2024',
+            role: 'admin',
+            region: 'Dakar',
+            phone: '+221 77 000 0000',
+            status: 'active',
+        });
+        console.log('✅ Admin créé : admin@agriflow.com / Admin@2024');
+    } else {
+        console.log('ℹ️  Admin existe déjà.');
+    }
+
+    // Créer un distributeur de test
+    const distExists = await User.findOne({ email: 'dist@agriflow.com' });
+    if (!distExists) {
+        await User.create({
+            name: 'Distributeur Test',
+            email: 'dist@agriflow.com',
+            password: 'Dist@2024',
+            role: 'distributor',
+            region: 'Thiès',
+            phone: '+221 76 111 1111',
+            status: 'active',
+        });
+        console.log('✅ Distributeur créé : dist@agriflow.com / Dist@2024');
+    } else {
+        console.log('ℹ️  Distributeur existe déjà.');
+    }
+
+    // Créer des produits de test si aucun produit n'existe
+    const productsCount = await Product.countDocuments();
+    if (productsCount === 0) {
+        const admin = await User.findOne({ email: 'admin@agriflow.com' });
+        await Product.insertMany([
+            {
+                farmer: admin._id,
+                name: 'Engrais NPK 15-15-15',
+                description: 'Engrais complet pour cultures mixtes',
+                category: 'Fertilizer',
+                price: 22500,
+                stockQuantity: 5000,
+                minThreshold: 500,
+                unit: 'kg',
+                imageUrl: '',
+            },
+            {
+                farmer: admin._id,
+                name: 'Semences de Maïs EVDT',
+                description: 'Variété à haut rendement, résistante à la sécheresse',
+                category: 'Seed',
+                price: 8000,
+                stockQuantity: 1200,
+                minThreshold: 200,
+                unit: 'kg',
+                imageUrl: '',
+            },
+            {
+                farmer: admin._id,
+                name: 'Insecticide Lambda',
+                description: 'Contre les insectes ravageurs sur céréales et légumes',
+                category: 'Pesticide',
+                price: 15750,
+                stockQuantity: 300,
+                minThreshold: 50,
+                unit: 'litre',
+                imageUrl: '',
+            },
+        ]);
+        console.log('✅ 3 produits créés dans l\'inventaire');
+    } else {
+        console.log(`ℹ️  ${productsCount} produit(s) déjà présent(s) en base.`);
+    }
+
+    console.log('\n🌾 Seed terminé avec succès !');
+    console.log('🔗 Backend : http://localhost:5000');
+    console.log('📚 Docs API : http://localhost:5000/api-docs\n');
+    process.exit(0);
+};
+
+seedData().catch((err) => {
+    console.error('❌ Erreur lors du seed:', err);
+    process.exit(1);
+});
