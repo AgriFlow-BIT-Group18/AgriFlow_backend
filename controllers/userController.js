@@ -47,14 +47,23 @@ const deleteUser = async (req, res) => {
 
 const updateUser = async (req, res) => {
     try {
+        // Enforce security: Only admin or the user themselves can update
+        if (req.user.role !== 'admin' && req.user._id.toString() !== req.params.id) {
+            return res.status(403).json({ message: 'Not authorized to update this profile' });
+        }
+
         const user = await User.findById(req.params.id);
         if (user) {
             user.name = req.body.name || user.name;
             user.email = req.body.email || user.email;
-            user.role = req.body.role || user.role;
-            user.region = req.body.region || user.region;
             user.phone = req.body.phone || user.phone;
-            user.status = req.body.status || user.status;
+            user.region = req.body.region || user.region;
+
+            // Only admin can change role or status
+            if (req.user.role === 'admin') {
+                user.role = req.body.role || user.role;
+                user.status = req.body.status || user.status;
+            }
 
             if (req.body.password) {
                 user.password = req.body.password;
