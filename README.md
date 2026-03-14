@@ -1,51 +1,78 @@
-# AgriFlow Backend API
+# AgriFlow Backend API Core 🚀
 
-Ce projet contient le backend de l'application AgriFlow, construit avec **Node.js, Express et MongoDB**. Il intègre une authentification sécurisée par JWT et une gestion basée sur les rôles (Customer, Farmer, Admin).
+The backbone of the AgriFlow ecosystem, providing a high-performance RESTful API for agricultural resource management, real-time analytics, and secure role-based access control.
 
-## Prérequis
+## 🛠️ Tech Stack
 
-- **Node.js** (v14 ou supérieur)
-- **MongoDB** (en cours d'exécution sur le port local par défaut `27017` ou URL distante)
+- **Runtime**: Node.js
+- **Framework**: Express.js (v5.0+)
+- **Database**: MongoDB (via Mongoose)
+- **Security**: JWT Authentication, Bcrypt password hashing, Helmet security headers, CORS protection.
+- **Monitoring**: Morgan logging middleware.
+- **Documentation**: Swagger/OpenAPI.
 
-## Installation et Lancement
+## 📂 Project Structure
 
-1. **Extraire le fichier ZIP** dans le dossier de votre choix.
-2. Ouvrir un terminal dans le dossier extrait (`backend`).
-3. Installer les dépendances (le dossier `node_modules` a été supprimé pour alléger le fichier ZIP) :
-   ```bash
-   npm install
-   ```
-4. Assurez-vous que le fichier `.env` est bien présent à la racine du projet avec les informations suivantes :
-   ```env
-   PORT=5000
-   MONGODB_URI=mongodb://127.0.0.1:27017/agriflow
-   JWT_SECRET=supersecretjwtkeytest123
-   ```
-5. **Démarrer le serveur** :
-   - Mode développement (avec rechargement automatique) : `npm run dev`
-   - Mode production : `npm start`
+- `controllers/`: Business logic for each resource module.
+- `models/`: Mongoose schemas (User, Product, Order, Delivery).
+- `routes/`: API endpoint definitions and middleware mapping.
+- `middlewares/`: Authentication and role-based authorization filters.
+- `scripts/`: Utility scripts (Database seeding, maintenance).
 
-## Documentation de l'API (Swagger)
+## 🔑 Authentication & Roles
 
-Une fois le serveur démarré, la documentation interactive de l'API est disponible à l'adresse suivante :
-👉 **http://localhost:5000/api-docs**
+The system uses JWT-based authentication. Include the token in the `Authorization` header: `Bearer <token>`.
 
-Vous pouvez y tester toutes les routes (Authentification, Produits, Commandes, etc.) directement depuis votre navigateur.
+### Roles
+- **Admin**: Full system access (CRUD on all resources).
+- **Distributor**: Professional access (Audit view of users/orders, access to analytics/reports).
+- **Farmer**: Personal access (Catalogue viewing, ordering, delivery tracking).
 
-# 🌾 AgriFlow Backend API
+## 📡 API Endpoints Summary
 
-Ce projet contient le backend de l'application mobile et web AgriFlow.
-Il est construit avec **Node.js, Express et MongoDB**, intègre une authentification sécurisée par **JWT** et gère trois rôles distincts (`customer`, `farmer`, `admin`) pour sécuriser les routes métier.
+### Authentication
+- `POST /api/auth/login`: Authenticate user and return JWT.
+- `POST /api/auth/register`: Create a new farmer account.
 
-## 🛠️ Configuration & Lancement
+### User Management
+- `GET /api/users`: List users (Admin/Distributor).
+- `PUT /api/users/:id`: Update profile (Self or Admin).
+- `DELETE /api/users/:id`: Remove user (Admin only).
 
-1. **Installer les dépendances**
-   Assurez-vous d'avoir Node.js installé, puis à la racine du dossier `/backend` lancez :
-   ```bash
-   npm install
+### Inventory
+- `GET /api/products`: List all agricultural inputs.
+- `POST /api/products`: Add new input (Admin only).
+- `DELETE /api/products/:id`: Remove input (Admin only).
 
-# Pour le développement (avec rechargement automatique) :
-npm run dev
+### Orders
+- `GET /api/orders`: List all orders (Admin/Distributor).
+- `GET /api/orders/myorders`: List current user's orders (Farmer).
+- `POST /api/orders`: Create new order (Farmer).
+- `PUT /api/orders/:id/status`: Update order status (Admin only).
 
-# Pour la production :
-npm start
+### Deliveries
+- `GET /api/deliveries`: List all deliveries (Admin/Distributor).
+- `POST /api/deliveries`: Schedule a new delivery (Admin only).
+- `PUT /api/deliveries/:id/status`: Update tracking status.
+
+### Analytics
+- `GET /api/analytics`: Real-time KPI aggregation and regional performance.
+
+## 🚀 Getting Started
+
+1.  **Install dependencies**:
+    ```bash
+    npm install
+    ```
+2.  **Environment Setup**: Create a `.env` file based on `.env.example`.
+3.  **Run Development Server**:
+    ```bash
+    npm run dev
+    ```
+4.  **Explore API**: Visit `http://localhost:5000/api-docs` for full Swagger documentation.
+
+---
+
+## 📄 License
+
+© 2026 AgriFlow Ecosystem. All rights reserved.
