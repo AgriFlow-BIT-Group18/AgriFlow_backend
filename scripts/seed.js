@@ -12,36 +12,41 @@ const seedData = async () => {
     await connectDB();
 
     // Créer un admin par défaut si il n'existe pas déjà
-    const adminExists = await User.findOne({ email: 'admin@agriflow.com' });
-
+    const adminEmail = process.env.SEED_ADMIN_EMAIL || 'admin@agriflow.com';
+    const adminPassword = process.env.SEED_ADMIN_PASSWORD || 'Admin@2024';
+    const adminExists = await User.findOne({ email: adminEmail });
+    
     if (!adminExists) {
         await User.create({
             name: 'Administrateur AgroFlow',
-            email: 'admin@agriflow.com',
-            password: 'Admin@2024',
+            email: adminEmail,
+            password: adminPassword,
             role: 'admin',
             region: 'Dakar',
             phone: '+221 77 000 0000',
             status: 'active',
         });
-        console.log('✅ Admin créé : admin@agriflow.com / Admin@2024');
+        console.log(`✅ Admin créé : ${adminEmail}`);
     } else {
         console.log('ℹ️  Admin existe déjà.');
     }
 
     // Créer un distributeur de test
-    const distExists = await User.findOne({ email: 'dist@agriflow.com' });
+    const distEmail = process.env.SEED_DIST_EMAIL || 'dist@agriflow.com';
+    const distPassword = process.env.SEED_DIST_PASSWORD || 'Dist@2024';
+    const distExists = await User.findOne({ email: distEmail });
+    
     if (!distExists) {
         await User.create({
             name: 'Distributeur Test',
-            email: 'dist@agriflow.com',
-            password: 'Dist@2024',
+            email: distEmail,
+            password: distPassword,
             role: 'distributor',
             region: 'Thiès',
             phone: '+221 76 111 1111',
             status: 'active',
         });
-        console.log('✅ Distributeur créé : dist@agriflow.com / Dist@2024');
+        console.log(`✅ Distributeur créé : ${distEmail}`);
     } else {
         console.log('ℹ️  Distributeur existe déjà.');
     }
