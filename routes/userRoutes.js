@@ -7,9 +7,9 @@ const {
     updateUser,
 } = require('../controllers/userController');
 const { protect } = require('../middlewares/authMiddleware');
-const { admin } = require('../middlewares/roleMiddleware');
+const { admin, staff } = require('../middlewares/roleMiddleware');
 
-router.route('/').get(protect, admin, getUsers);
+router.route('/').get(protect, staff, getUsers);
 router.route('/:id')
     .put(protect, updateUser)
     .delete(protect, admin, deleteUser);

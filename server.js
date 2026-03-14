@@ -27,6 +27,8 @@ app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/products', require('./routes/productRoutes'));
 app.use('/api/orders', require('./routes/orderRoutes'));
 app.use('/api/users', require('./routes/userRoutes'));
+app.use('/api/deliveries', require('./routes/deliveryRoutes'));
+app.use('/api/analytics', require('./routes/analyticsRoutes'));
 
 // Swagger UI Route
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs));

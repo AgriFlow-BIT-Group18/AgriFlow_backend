@@ -8,7 +8,7 @@ const {
     updateOrderStatus,
 } = require('../controllers/orderController');
 const { protect } = require('../middlewares/authMiddleware');
-const { admin } = require('../middlewares/roleMiddleware');
+const { admin, staff } = require('../middlewares/roleMiddleware');
 
 /**
  * @swagger
@@ -22,7 +22,7 @@ const { admin } = require('../middlewares/roleMiddleware');
  *       200:
  *         description: List of all orders
  */
-router.route('/').get(protect, admin, getOrders).post(protect, createOrder);
+router.route('/').get(protect, staff, getOrders).post(protect, createOrder);
 
 /**
  * @swagger
