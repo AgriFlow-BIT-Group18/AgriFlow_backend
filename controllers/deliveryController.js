@@ -10,6 +10,20 @@ const getDeliveries = async (req, res) => {
     }
 };
 
+const getMyDeliveries = async (req, res) => {
+    try {
+        // Find orders belonging to the user
+        const orders = await Order.find({ user: req.user._id });
+        const orderIds = orders.map(o => o._id);
+        
+        // Find deliveries linked to those orders
+        const deliveries = await Delivery.find({ order: { $in: orderIds } }).populate('order');
+        res.status(200).json(deliveries);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 const createDelivery = async (req, res) => {
     const { orderId, driverName, driverPhone, estimatedDeliveryTime } = req.body;
     try {
@@ -54,6 +68,7 @@ const updateDeliveryStatus = async (req, res) => {
 
 module.exports = {
     getDeliveries,
+    getMyDeliveries,
     createDelivery,
     updateDeliveryStatus,
 };
