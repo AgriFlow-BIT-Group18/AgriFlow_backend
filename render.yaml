@@ -11,10 +11,8 @@ services:
       - key: PORT
         value: 10000
       - key: MONGO_URI
-        fromValue:
-          placeholder: "Entrez votre URI MongoDB (ex: mongodb+srv://...)"
+        sync: false
       - key: JWT_SECRET
-        fromValue:
-          placeholder: "Générez un secret JWT sécurisé"
+        sync: false
       - key: CORS_ORIGIN
         value: "https://agriflow.vercel.app"
