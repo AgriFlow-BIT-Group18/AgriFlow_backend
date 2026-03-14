@@ -30,6 +30,26 @@ const createProduct = async (req, res) => {
             return res.status(403).json({ message: 'Not authorized to create product' });
         }
 
+        // Check if product already exists for this user (same name, category, unit)
+        const existingProduct = await Product.findOne({
+            farmer: req.user._id,
+            name: { $regex: new RegExp(`^${name}$`, 'i') }, // Case-insensitive match
+            category,
+            unit
+        });
+
+        if (existingProduct) {
+            // Update existing product stock
+            existingProduct.stockQuantity += Number(stockQuantity || 0);
+            existingProduct.price = price !== undefined ? price : existingProduct.price;
+            existingProduct.description = description || existingProduct.description;
+            existingProduct.minThreshold = minThreshold !== undefined ? minThreshold : existingProduct.minThreshold;
+            existingProduct.imageUrl = imageUrl || existingProduct.imageUrl;
+
+            const updatedProduct = await existingProduct.save();
+            return res.status(200).json(updatedProduct);
+        }
+
         const product = new Product({
             farmer: req.user._id,
             name,
