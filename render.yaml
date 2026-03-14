@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: agriflow-backend
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: MONGO_URI
+        fromValue:
+          placeholder: "Entrez votre URI MongoDB (ex: mongodb+srv://...)"
+      - key: JWT_SECRET
+        fromValue:
+          placeholder: "Générez un secret JWT sécurisé"
+      - key: CORS_ORIGIN
+        value: "https://agriflow.vercel.app"
