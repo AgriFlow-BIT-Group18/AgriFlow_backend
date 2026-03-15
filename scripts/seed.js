@@ -18,7 +18,7 @@ const seedData = async () => {
     
     if (!adminExists) {
         await User.create({
-            name: 'Administrateur AgroFlow',
+            name: 'Administrateur AgriFlow',
             email: adminEmail,
             password: adminPassword,
             role: 'admin',
@@ -51,10 +51,10 @@ const seedData = async () => {
         console.log('ℹ️  Distributeur existe déjà.');
     }
 
-    // Créer des produits de test si aucun produit n'existe
-    const productsCount = await Product.countDocuments();
-    if (productsCount === 0) {
-        const admin = await User.findOne({ email: 'admin@agriflow.com' });
+    // Créer des produits de test
+    await Product.deleteMany({});
+    const admin = await User.findOne({ email: 'admin@agriflow.com' });
+    if (admin) {
         await Product.insertMany([
             {
                 farmer: admin._id,
@@ -65,7 +65,7 @@ const seedData = async () => {
                 stockQuantity: 5000,
                 minThreshold: 500,
                 unit: 'kg',
-                imageUrl: '',
+                imageUrl: 'assets/images/fertilizer_npk.png',
             },
             {
                 farmer: admin._id,
@@ -76,7 +76,7 @@ const seedData = async () => {
                 stockQuantity: 1200,
                 minThreshold: 200,
                 unit: 'kg',
-                imageUrl: '',
+                imageUrl: 'assets/images/maize_seeds.png',
             },
             {
                 farmer: admin._id,
@@ -87,7 +87,7 @@ const seedData = async () => {
                 stockQuantity: 300,
                 minThreshold: 50,
                 unit: 'litre',
-                imageUrl: '',
+                imageUrl: 'assets/images/insecticide_lambda.png',
             },
         ]);
         console.log('✅ 3 produits créés dans l\'inventaire');

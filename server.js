@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
+const path = require('path');
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpecs = require('./swagger/swagger');
 const connectDB = require('./config/db');
@@ -21,6 +22,9 @@ app.use(morgan('dev'));
 // Body parser
 app.use(express.json());
 
+// Serve static files
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 // Routes
 app.get('/favicon.ico', (req, res) => res.status(204).end());
 app.use('/api/auth', require('./routes/authRoutes'));
@@ -28,7 +32,9 @@ app.use('/api/products', require('./routes/productRoutes'));
 app.use('/api/orders', require('./routes/orderRoutes'));
 app.use('/api/users', require('./routes/userRoutes'));
 app.use('/api/deliveries', require('./routes/deliveryRoutes'));
+app.use('/api/notifications', require('./routes/notificationRoutes'));
 app.use('/api/analytics', require('./routes/analyticsRoutes'));
+app.use('/api/upload', require('./routes/uploadRoutes'));
 
 // Swagger UI Route
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs));

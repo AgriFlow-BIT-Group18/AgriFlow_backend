@@ -46,7 +46,20 @@ const userSchema = mongoose.Schema(
         lastSeen: {
             type: Date,
             default: Date.now,
-        }
+        },
+        avatar: {
+            type: String, // URL/Path to the profile picture
+        },
+        location: {
+            type: {
+                type: String,
+                enum: ['Point'],
+            },
+            coordinates: {
+                type: [Number],
+                index: '2dsphere',
+            },
+        },
     },
     {
         timestamps: true,

@@ -1,4 +1,5 @@
 const Order = require('../models/Order');
+const Notification = require('../models/Notification');
 
 const createOrder = async (req, res) => {
     const { orderItems, shippingAddress, paymentMethod, totalPrice } = req.body;
@@ -17,6 +18,15 @@ const createOrder = async (req, res) => {
             });
 
             const createdOrder = await order.save();
+            
+            // Create notification for user
+            await Notification.create({
+                user: req.user._id,
+                title: 'Order Placed',
+                message: `Your order #${createdOrder._id.toString().substring(16)} has been placed successfully.`,
+                type: 'order'
+            });
+
             res.status(201).json(createdOrder);
         } catch (error) {
             res.status(500).json({ message: error.message });
@@ -63,6 +73,15 @@ const updateOrderStatus = async (req, res) => {
         if (order) {
             order.status = req.body.status || order.status;
             const updatedOrder = await order.save();
+
+            // Create notification for user
+            await Notification.create({
+                user: order.user,
+                title: 'Order Status Updated',
+                message: `Your order status has been updated to: ${updatedOrder.status}.`,
+                type: 'order'
+            });
+
             res.status(200).json(updatedOrder);
         } else {
             res.status(404).json({ message: 'Order not found' });

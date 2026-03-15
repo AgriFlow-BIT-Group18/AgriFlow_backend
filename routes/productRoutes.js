@@ -6,6 +6,7 @@ const {
     createProduct,
     updateProduct,
     deleteProduct,
+    createProductReview,
 } = require('../controllers/productController');
 const { protect } = require('../middlewares/authMiddleware');
 
@@ -157,5 +158,44 @@ router.route('/:id').put(protect, updateProduct);
  *         description: Product not found
  */
 router.route('/:id').delete(protect, deleteProduct);
+
+/**
+ * @swagger
+ * /api/products/{id}/reviews:
+ *   post:
+ *     summary: Create a product review
+ *     tags: [Products]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The product ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - rating
+ *               - comment
+ *             properties:
+ *               rating:
+ *                 type: number
+ *               comment:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Review added
+ *       400:
+ *         description: Product already reviewed
+ *       404:
+ *         description: Product not found
+ */
+router.route('/:id/reviews').post(protect, createProductReview);
 
 module.exports = router;

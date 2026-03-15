@@ -87,9 +87,37 @@ const updateUser = async (req, res) => {
     }
 };
 
+const getNearbyDistributors = async (req, res) => {
+    const { lat, lng, distance = 10 } = req.query; // distance in km
+    
+    if (!lat || !lng) {
+        return res.status(400).json({ message: 'Please provide latitude and longitude' });
+    }
+
+    try {
+        const distributors = await User.find({
+            role: 'distributor',
+            location: {
+                $near: {
+                    $geometry: {
+                        type: 'Point',
+                        coordinates: [parseFloat(lng), parseFloat(lat)],
+                    },
+                    $maxDistance: distance * 1000, // MongoDB uses meters
+                },
+            },
+        }).select('-password');
+        
+        res.status(200).json(distributors);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 module.exports = {
     getUsers,
     updateUserStatus,
     deleteUser,
     updateUser,
+    getNearbyDistributors,
 };
