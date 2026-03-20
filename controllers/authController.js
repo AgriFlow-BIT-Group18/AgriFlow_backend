@@ -21,6 +21,8 @@ const registerUser = async (req, res) => {
             email,
             password,
             role: role || 'user',
+            country: req.body.country,
+            phone: req.body.phone,
         });
 
         if (user) {

@@ -59,7 +59,7 @@ const getMyOrders = async (req, res) => {
 
 const getOrders = async (req, res) => {
     try {
-        const orders = await Order.find({}).populate('user', 'id name region');
+        const orders = await Order.find({}).populate('user', 'id name country');
         res.status(200).json(orders);
     } catch (error) {
         res.status(500).json({ message: error.message });

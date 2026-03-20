@@ -12,7 +12,7 @@ const seedFarmer = async () => {
             email: farmerEmail,
             password: 'Farmer@2024',
             role: 'farmer',
-            region: 'Ashanti Region',
+            country: 'Burkina Faso',
             phone: '+233 24 000 0001',
             status: 'active'
         });

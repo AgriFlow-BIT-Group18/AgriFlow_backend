@@ -21,7 +21,7 @@ const updateUserStatus = async (req, res) => {
                 email: updatedUser.email,
                 role: updatedUser.role,
                 status: updatedUser.status,
-                region: updatedUser.region
+                country: updatedUser.country
             });
         } else {
             res.status(404).json({ message: 'User not found' });
@@ -57,7 +57,7 @@ const updateUser = async (req, res) => {
             user.name = req.body.name || user.name;
             user.email = req.body.email || user.email;
             user.phone = req.body.phone || user.phone;
-            user.region = req.body.region || user.region;
+            user.country = req.body.country || user.country;
 
             // Only admin can change role or status
             if (req.user.role === 'admin') {
@@ -76,7 +76,7 @@ const updateUser = async (req, res) => {
                 email: updatedUser.email,
                 role: updatedUser.role,
                 status: updatedUser.status,
-                region: updatedUser.region,
+                country: updatedUser.country,
                 phone: updatedUser.phone
             });
         } else {

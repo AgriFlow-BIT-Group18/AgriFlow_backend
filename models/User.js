@@ -24,9 +24,9 @@ const userSchema = mongoose.Schema(
         phone: {
             type: String,
         },
-        region: {
+        country: {
             type: String,
-            default: 'Dakar',
+            default: 'Burkina Faso',
         },
         status: {
             type: String,

@@ -14,6 +14,7 @@ const seedData = async () => {
     // Créer un admin par défaut si il n'existe pas déjà
     const adminEmail = process.env.SEED_ADMIN_EMAIL || 'admin@agriflow.com';
     const adminPassword = process.env.SEED_ADMIN_PASSWORD || 'Admin@2024';
+    const adminCountry = process.env.SEED_ADMIN_COUNTRY || 'Burkina Faso';
     const adminExists = await User.findOne({ email: adminEmail });
     
     if (!adminExists) {
@@ -22,8 +23,8 @@ const seedData = async () => {
             email: adminEmail,
             password: adminPassword,
             role: 'admin',
-            region: 'Dakar',
-            phone: '+221 77 000 0000',
+            country: adminCountry,
+            phone: '+226 25 00 00 00',
             status: 'active',
         });
         console.log(`✅ Admin créé : ${adminEmail}`);
@@ -34,6 +35,7 @@ const seedData = async () => {
     // Créer un distributeur de test
     const distEmail = process.env.SEED_DIST_EMAIL || 'dist@agriflow.com';
     const distPassword = process.env.SEED_DIST_PASSWORD || 'Dist@2024';
+    const distCountry = process.env.SEED_DIST_COUNTRY || 'Sénégal';
     const distExists = await User.findOne({ email: distEmail });
     
     if (!distExists) {
@@ -42,7 +44,7 @@ const seedData = async () => {
             email: distEmail,
             password: distPassword,
             role: 'distributor',
-            region: 'Thiès',
+            country: distCountry,
             phone: '+221 76 111 1111',
             status: 'active',
         });

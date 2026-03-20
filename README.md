@@ -56,7 +56,7 @@ The system uses JWT-based authentication. Include the token in the `Authorizatio
 - `PUT /api/deliveries/:id/status`: Update tracking status.
 
 ### Analytics
-- `GET /api/analytics`: Real-time KPI aggregation and regional performance.
+- `GET /api/analytics`: Real-time KPI aggregation and country performance.
 
 ## 🚀 Getting Started
 

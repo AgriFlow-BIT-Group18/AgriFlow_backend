@@ -33,8 +33,8 @@ const getDashboardStats = async (req, res) => {
         const activeFarmers = await User.countDocuments({ role: 'farmer', status: 'active' });
 
         // 5. Regional Performance
-        // We'll group by user region
-        const regionalStats = await Order.aggregate([
+        // We'll group by user country
+        const countryStats = await Order.aggregate([
             {
                 $lookup: {
                     from: 'users',
@@ -46,7 +46,7 @@ const getDashboardStats = async (req, res) => {
             { $unwind: '$userData' },
             {
                 $group: {
-                    _id: '$userData.region',
+                    _id: '$userData.country',
                     totalVolume: { 
                         $sum: { 
                             $reduce: {
@@ -96,7 +96,7 @@ const getDashboardStats = async (req, res) => {
                 { label: "Processing Time", value: `${avgProcessingTime}h`, sub: "Target < 48h", trend: "-2h", positive: true },
                 { label: "Active Farmers", value: `${activeFarmers}`, sub: "Registered", trend: "+12", positive: true },
             ],
-            regionalPerformance: regionalStats.map(stat => ({
+            countryPerformance: countryStats.map(stat => ({
                 name: stat._id || "Unknown",
                 value: `${stat.totalVolume.toLocaleString()}kg`,
                 pct: Math.min(100, (stat.totalVolume / (totalKg || 1)) * 100)
@@ -109,7 +109,7 @@ const getDashboardStats = async (req, res) => {
             recentTransactions: recentTransactions.map(tx => ({
                 id: tx._id,
                 farmer: tx.userData?.[0]?.name || tx.user?.name || 'Unknown',
-                region: tx.userData?.[0]?.region || 'Dakar',
+                country: tx.userData?.[0]?.country || 'Burkina Faso',
                 amount: `${tx.orderItems.reduce((acc, item) => acc + item.qty, 0)}kg`,
                 date: tx.updatedAt,
                 status: tx.status
@@ -122,12 +122,12 @@ const getDashboardStats = async (req, res) => {
 
 const exportData = async (req, res) => {
     try {
-        const orders = await Order.find({ status: { $in: ['approved', 'delivery', 'delivered'] } }).populate('user', 'name region');
+        const orders = await Order.find({ status: { $in: ['approved', 'delivery', 'delivered'] } }).populate('user', 'name country');
         
         let csv = 'ID,Date,Farmer,Region,Amount(kg),Status\n';
         orders.forEach(order => {
             const amount = order.orderItems.reduce((acc, item) => acc + item.qty, 0);
-            csv += `${order._id},${order.updatedAt.toISOString()},${order.user?.name || 'N/A'},${order.user?.region || 'Dakar'},${amount},${order.status}\n`;
+            csv += `${order._id},${order.updatedAt.toISOString()},${order.user?.name || 'N/A'},${order.user?.country || 'Burkina Faso'},${amount},${order.status}\n`;
         });
 
         res.setHeader('Content-Type', 'text/csv');
