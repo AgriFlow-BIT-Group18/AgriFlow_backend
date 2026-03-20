@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { registerUser, loginUser, getMe, forgotPassword, resetPassword } = require('../controllers/authController');
 const { protect } = require('../middlewares/authMiddleware');
+const { authValidation } = require('../middlewares/validation');
 
 /**
  * @swagger
@@ -31,17 +32,25 @@ const { protect } = require('../middlewares/authMiddleware');
  *                 enum: [customer, farmer, admin]
  *     responses:
  *       201:
- *         description: User created
+ *         description: User created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
  *       400:
- *         description: Bad request
+ *         description: Validation error or User already exists
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
-router.post('/register', registerUser);
+router.post('/register', authValidation.register, registerUser);
 
 /**
  * @swagger
  * /api/auth/login:
  *   post:
- *     summary: Login user
+ *     summary: Login user and get token
  *     tags: [Auth]
  *     requestBody:
  *       required: true
@@ -59,11 +68,22 @@ router.post('/register', registerUser);
  *                 type: string
  *     responses:
  *       200:
- *         description: User logged in
+ *         description: Login successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 token: { type: 'string' }
+ *                 user: { $ref: '#/components/schemas/User' }
  *       401:
  *         description: Invalid credentials
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
-router.post('/login', loginUser);
+router.post('/login', authValidation.login, loginUser);
 
 /**
  * @swagger

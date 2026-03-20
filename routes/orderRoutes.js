@@ -9,6 +9,7 @@ const {
 } = require('../controllers/orderController');
 const { protect } = require('../middlewares/authMiddleware');
 const { admin, staff } = require('../middlewares/roleMiddleware');
+const { orderValidation } = require('../middlewares/validation');
 
 /**
  * @swagger
@@ -20,9 +21,39 @@ const { admin, staff } = require('../middlewares/roleMiddleware');
  *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: List of all orders
+ *         description: List of all orders retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Order'
+ *   post:
+ *     summary: Create a new order
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Order'
+ *     responses:
+ *       201:
+ *         description: Order created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Order'
+ *       400:
+ *         description: Invalid order data
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
-router.route('/').get(protect, staff, getOrders).post(protect, createOrder);
+router.route('/').get(protect, staff, getOrders).post(protect, orderValidation.create, createOrder);
 
 /**
  * @swagger

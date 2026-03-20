@@ -9,6 +9,7 @@ const {
     createProductReview,
 } = require('../controllers/productController');
 const { protect } = require('../middlewares/authMiddleware');
+const { productValidation } = require('../middlewares/validation');
 
 /**
  * @swagger
@@ -18,7 +19,13 @@ const { protect } = require('../middlewares/authMiddleware');
  *     tags: [Products]
  *     responses:
  *       200:
- *         description: List of products
+ *         description: List of products retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Product'
  */
 router.route('/').get(getProducts);
 
@@ -26,7 +33,7 @@ router.route('/').get(getProducts);
  * @swagger
  * /api/products:
  *   post:
- *     summary: Create a newly listed product (Farmer/Admin only)
+ *     summary: Create a newly listed product (Admin/Distributor only)
  *     tags: [Products]
  *     security:
  *       - bearerAuth: []
@@ -35,35 +42,24 @@ router.route('/').get(getProducts);
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             required:
- *               - name
- *               - description
- *               - category
- *               - price
- *               - stockQuantity
- *             properties:
- *               name:
- *                 type: string
- *               description:
- *                 type: string
- *               category:
- *                 type: string
- *               price:
- *                 type: number
- *               stockQuantity:
- *                 type: number
- *               imageUrl:
- *                 type: string
+ *             $ref: '#/components/schemas/Product'
  *     responses:
  *       201:
- *         description: Created product
+ *         description: Product created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Product'
+ *       400:
+ *         description: Validation error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  *       401:
  *         description: Not authorized
- *       403:
- *         description: Forbidden (Not a farmer or admin)
  */
-router.route('/').post(protect, createProduct);
+router.route('/').post(protect, productValidation.create, createProduct);
 
 /**
  * @swagger

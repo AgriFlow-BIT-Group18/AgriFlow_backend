@@ -8,19 +8,46 @@ const path = require('path');
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpecs = require('./swagger/swagger');
 const connectDB = require('./config/db');
+const rateLimit = require('express-rate-limit');
+const mongoSanitize = require('express-mongo-sanitize');
+const xss = require('xss-clean');
+const hpp = require('hpp');
 
 // Connect to database
 connectDB();
 
 const app = express();
 
-// Security and Logging Middlewares
+// --- Security & Performance Middlewares ---
+
+// 1. Rate Limiting (Brute-force protection)
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // Limit each IP to 100 requests per windowMs
+    message: 'Too many requests from this IP, please try again after 15 minutes'
+});
+app.use('/api', limiter);
+
+// 2. Helmet (Security headers)
 app.use(helmet());
+
+// 3. NoSQL Injection protection
+app.use(mongoSanitize());
+
+// 4. XSS Protection (deprecated but still effective for basics in CS27)
+app.use(xss());
+
+// 5. HTTP Parameter Pollution protection
+app.use(hpp());
+
+// 6. CORS
 app.use(cors());
+
+// 7. Logging
 app.use(morgan('dev'));
 
 // Body parser
-app.use(express.json());
+app.use(express.json({ limit: '10kb' })); // Limit body size for security
 
 // Serve static files
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
