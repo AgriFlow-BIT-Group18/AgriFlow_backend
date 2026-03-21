@@ -73,6 +73,12 @@ The system uses JWT-based authentication. Include the token in the `Authorizatio
 
 ---
 
-## 📄 License
+## 📄 License & Authors
+
+**Project Authors:**
+- KIENDREBEOGO Moussa
+- KYEMTORE Gloria COMPAORE Adile
+- OUEDRAOGO Akram
+- YAMEOGO Angeline
 
 © 2026 AgriFlow Ecosystem. All rights reserved.

@@ -42,11 +42,18 @@ const registerUser = async (req, res) => {
 };
 
 const loginUser = async (req, res) => {
-    const { email, password } = req.body;
+    const { email, password, role } = req.body;
     try {
         const user = await User.findOne({ email });
 
         if (user && (await user.matchPassword(password))) {
+            // Check if role is provided and matches
+            if (role && user.role !== role) {
+                return res.status(403).json({ 
+                    message: `Invalid access. This account is registered as ${user.role}, not ${role}.` 
+                });
+            }
+
             user.lastSeen = Date.now();
             await user.save();
             res.json({

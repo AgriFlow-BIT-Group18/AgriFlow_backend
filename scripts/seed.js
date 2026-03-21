@@ -35,7 +35,7 @@ const seedData = async () => {
     // Créer un distributeur de test
     const distEmail = process.env.SEED_DIST_EMAIL || 'dist@agriflow.com';
     const distPassword = process.env.SEED_DIST_PASSWORD || 'Dist@2024';
-    const distCountry = process.env.SEED_DIST_COUNTRY || 'Sénégal';
+    const distCountry = process.env.SEED_DIST_COUNTRY || 'Burkina Faso';
     const distExists = await User.findOne({ email: distEmail });
     
     if (!distExists) {
@@ -45,7 +45,7 @@ const seedData = async () => {
             password: distPassword,
             role: 'distributor',
             country: distCountry,
-            phone: '+221 76 111 1111',
+            phone: '+226 25 11 11 11',
             status: 'active',
         });
         console.log(`✅ Distributeur créé : ${distEmail}`);
