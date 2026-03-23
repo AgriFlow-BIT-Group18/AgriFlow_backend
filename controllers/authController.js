@@ -20,8 +20,8 @@ const registerUser = async (req, res) => {
             name,
             email,
             password,
-            role: role || 'user',
-            country: req.body.country,
+            role: role || 'customer',
+            country: req.body.country || req.body.region || 'Burkina Faso',
             phone: req.body.phone,
         });
 

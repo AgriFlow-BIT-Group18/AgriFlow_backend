@@ -8,10 +8,10 @@ const User = require('../models/User');
 // Configure storage
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        const type = req.params.type || 'others';
         let folder = 'uploads/';
-        if (type === 'avatar') folder += 'avatars';
-        else if (type === 'ai') folder += 'ai-attachments';
+        if (req.path.includes('avatar')) folder += 'avatars';
+        else if (req.path.includes('ai')) folder += 'ai-attachments';
+        else folder += 'others';
         cb(null, folder);
     },
     filename: (req, file, cb) => {
