@@ -13,7 +13,12 @@ const getDeliveries = async (req, res) => {
 
 const getMyDeliveries = async (req, res) => {
     try {
-        // Find orders belonging to the user
+        if (req.user.role === 'distributor') {
+            const deliveries = await Delivery.find({ distributor: req.user._id }).populate('order');
+            return res.status(200).json(deliveries);
+        }
+        
+        // For farmers, find orders belonging to them
         const orders = await Order.find({ user: req.user._id });
         const orderIds = orders.map(o => o._id);
         
@@ -41,6 +46,7 @@ const createDelivery = async (req, res) => {
 
         const delivery = await Delivery.create({
             order: finalOrderId,
+            distributor: req.body.distributorId || req.user._id, // Assign to current user if not provided
             driverName,
             driverPhone,
             estimatedDeliveryTime,

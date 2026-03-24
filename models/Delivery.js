@@ -7,6 +7,10 @@ const deliverySchema = mongoose.Schema(
             required: true,
             ref: 'Order',
         },
+        distributor: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+        },
         driverName: {
             type: String,
             required: true,
