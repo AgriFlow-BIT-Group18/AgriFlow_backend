@@ -20,7 +20,10 @@ const app = express();
 
 // --- Security & Performance Middlewares ---
 
-// 1. Rate Limiting (Brute-force protection)
+// 1. CORS (Must be FIRST to handle Preflight OPTIONS requests properly)
+app.use(cors());
+
+// 2. Rate Limiting (Brute-force protection)
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
     max: 100, // Limit each IP to 100 requests per windowMs
@@ -28,20 +31,19 @@ const limiter = rateLimit({
 });
 app.use('/api', limiter);
 
-// 2. Helmet (Security headers)
-app.use(helmet());
+// 3. Helmet (Security headers)
+app.use(helmet({
+  crossOriginResourcePolicy: false,
+}));
 
-// 3. NoSQL Injection protection
+// 4. NoSQL Injection protection
 app.use(mongoSanitize());
 
-// 4. XSS Protection (deprecated but still effective for basics in CS27)
+// 5. XSS Protection (deprecated but still effective for basics in CS27)
 app.use(xss());
 
-// 5. HTTP Parameter Pollution protection
+// 6. HTTP Parameter Pollution protection
 app.use(hpp());
-
-// 6. CORS
-app.use(cors());
 
 // 7. Logging
 app.use(morgan('dev'));
