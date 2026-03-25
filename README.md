@@ -19,6 +19,24 @@ The backbone of the AgriFlow ecosystem, providing a high-performance RESTful API
 - `middlewares/`: Authentication and role-based authorization filters.
 - `scripts/`: Utility scripts (Database seeding, maintenance).
 
+---
+
+## 🔄 Authentication & Ecosystem Integration
+
+### 🔑 Authentication Flow (JWT)
+The system uses **JSON Web Tokens (JWT)** for secure, stateless authentication:
+1.  **Request**: User sends credentials to `POST /api/auth/login`.
+2.  **Verification**: Backend validates credentials against MongoDB.
+3.  **Token Issuance**: Backend returns a signed JWT.
+4.  **Authorized Access**: Frontend/Mobile must include this token in the `Authorization` header (`Bearer <token>`) for all protected routes.
+
+### 🌐 Integration Points
+- **Web Dashboard**: Connects via `https://agriflow-backend-te8k.onrender.com/api` (Production) or `http://localhost:5000/api` (Local).
+- **Mobile App**: Uses the same production endpoint to ensure synchronized data for farmers.
+- **AI Sync**: While the AI connects directly to Groq, its context is derived from the Backend's data models (Products, Orders, Deliveries).
+
+---
+
 ## 🔑 Authentication & Roles
 
 The system uses JWT-based authentication. Include the token in the `Authorization` header: `Bearer <token>`.
